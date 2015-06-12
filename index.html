@@ -6,30 +6,32 @@
 </head>
 <body>
 	<div class="page"></div>
+
 	<script type="text/template" id="user-list-template">
-		
-		<table>
-			<thead>
+	<table>
+		<thead>
+			<tr>
+				<td>Name</td>
+				<td>Age</td>
+				<td></td>
+			</tr>
+		</thead>
+		<tbody>
+			<% _.each(users, function(user) { %>
 				<tr>
-					<td>Name</td>
-					<td>Age</td>
-					<td></td>
+					<td><%= user.get('name') %></td>
+					<td><%= user.get('age') %></td>
+					<td><a href="#/user/<%= user.get('_id') %>">Editar</a></td>
 				</tr>
-			</thead>
-			<tbody>
-				<%=users%>
-				
-			</tbody>
-		</table>
-		
+			<% }); %>
+		</tbody>
+	</table>
 	</script>
-	<!--<% _.each(users, function(user) { %>
-					<tr>
-						<td><%= user.get('name') %></td>
-						<td><%= user.get('age') %></td>
-						<td><a href="users/<%= user.get('_id') %>">Editar</a></td>
-					</tr>
-				<% }); %>-->
+
+	<script type="text/template" id="user-form-template">
+	Aqui vai o form
+	</script>
+	
 	<script src="public/javascripts/jquery.min.js" type="text/javascript"></script>
 	<script src="public/javascripts/underscore.min.js" type="text/javascript"></script>
 	<script src="public/javascripts/backbone.min.js" type="text/javascript"></script>
