@@ -1,0 +1,22 @@
+<a href="#">Lista de usuários</a>
+<form action="" class="formUser" method="post">
+	<div>
+		<label>
+			First Name: 
+			<input type="text" name="firstname" value="<%=user[0] ? user[0].get('firstname') : '' %>">
+		</label>
+	</div>
+	<div>
+		<label>
+			Last Name: 
+			<input type="text" name="lastname" value="<%=user[0] ? user[0].get('lastname') : '' %>">
+		</label>
+	</div>
+	<div>
+		<label>
+			Age: 
+			<input type="text" name="age" value="<%=user[0] ? user[0].get('age') : '' %>">
+		</label>
+	</div>
+	<button type="submit">Save</button>
+</form>

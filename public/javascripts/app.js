@@ -1,39 +1,92 @@
+var pwd = function(href) {
+	return document.location.href.match('localhost') ? '/backbone'+ href : href;
+}
+
+var formToObject = function(form) {
+	var childList = {};
+	for(var child in form.childNodes) {
+		console.log(form.childNodes[child]);
+	}
+}
+
 var GetUsers = Backbone.Collection.extend({
-	url: '/backbone/users.json'
+	url: pwd('/data/users.php')
+});
+
+var GetUserData = Backbone.Collection.extend({
+	url: pwd('/data/user.php')
 });
 
 var UserList = Backbone.View.extend({
 	el: '.page'
 	, render: function() {
 		var $scope = this;
-		var users = new GetUsers();
-
 		this.$el.html('Loading');
-		
-		users.fetch({
-			type: 'POST'
-			, success: function(data) {
-				var userListTemplate = document.getElementById('user-list-template').innerHTML;
-				var template = _.template(userListTemplate)({ users: data.models });
-				$scope.$el.html(template);
-			}
+
+		var view = $.get(pwd('/views/home.html'));
+
+		view.success(function(html) {
+			var users = new GetUsers();
+			var template = _.template(html);
+
+			users.fetch({
+				success: function(data) {
+					$scope.$el.html(template({ users: data.models }));
+				}
+			});
 		});
 	}
 });
 
 var UserForm = Backbone.View.extend({
 	el: '.page'
-	, render: function() {
-		var view = document.getElementById('user-form-template').innerHTML;
+	, template: function(callback) {
+		var view = $.get(pwd('/views/user.html'));
+		view.success(function(html) {
+			return callback(html)
+		});
+	}
+	, formData: function(id, callback) {
+		if(!id)
+			return callback();
+		else {
+			var user = new GetUserData();
+			user.fetch({
+				data: {
+					_id: id
+				}
+				, success: function(data) {
+					return callback(data);
+				}
+			});
+		}
+	}
+	, render: function(options) {
+		$scope = this;
 		
-		var template = _.template(view)();
-		this.$el.html(template);
+		this.template(function(html) {
+			$scope.formData(options.id, function(data) {
+				options = data ? { user: data.models } : { user: {} };
+				var template = _.template(html)(options);
+				$scope.$el.html(template);
+			})
+		});
+	}
+	, events: {
+		'submit .formUser': 'saveUser'
+	}
+	, saveUser: function(ev) {
+		var details = $(ev.currentTarget).serializeObjects();
+		formToObject(details);
+
+		return false;
 	}
 });
 
 var Router = Backbone.Router.extend({
 	routes: {
 		'': 'home'
+		, 'user': 'user'
 		, 'user/:id': 'user'
 	}
 });
@@ -47,8 +100,8 @@ router.on('route:home', function() {
 	userList.render();
 });
 
-router.on('route:user', function() {
-	userForm.render();
+router.on('route:user', function(id) {
+	userForm.render({ id: id });
 });
 
 Backbone.history.start();
