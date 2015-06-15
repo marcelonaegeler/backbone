@@ -3,20 +3,23 @@
 	<div>
 		<label>
 			First Name: 
-			<input type="text" name="firstname" value="<%=user[0] ? user[0].get('firstname') : '' %>">
+			<input type="text" name="firstname" value="<%=user ? user.get('firstname') : '' %>">
 		</label>
 	</div>
 	<div>
 		<label>
 			Last Name: 
-			<input type="text" name="lastname" value="<%=user[0] ? user[0].get('lastname') : '' %>">
+			<input type="text" name="lastname" value="<%=user ? user.get('lastname') : '' %>">
 		</label>
 	</div>
 	<div>
 		<label>
 			Age: 
-			<input type="text" name="age" value="<%=user[0] ? user[0].get('age') : '' %>">
+			<input type="text" name="age" value="<%=user ? user.get('age') : '' %>">
 		</label>
 	</div>
+	<% if(user) { %>
+	<input type="hidden" name="_id" value="<%= user.get('_id') %>">
+	<% } %>
 	<button type="submit">Save</button>
 </form>

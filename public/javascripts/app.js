@@ -4,6 +4,7 @@ var pwd = function(href) {
 
 var formToObject = function(form) {
 	var childList = {};
+	console.log(form);
 	for(var child in form.childNodes) {
 		console.log(form.childNodes[child]);
 	}
@@ -46,7 +47,7 @@ var UserForm = Backbone.View.extend({
 			return callback(html)
 		});
 	}
-	, formData: function(id, callback) {
+	, getData: function(id, callback) {
 		if(!id)
 			return callback();
 		else {
@@ -63,10 +64,12 @@ var UserForm = Backbone.View.extend({
 	}
 	, render: function(options) {
 		$scope = this;
-		
+		this.$el.html('Loading');
+
 		this.template(function(html) {
-			$scope.formData(options.id, function(data) {
-				options = data ? { user: data.models } : { user: {} };
+			$scope.getData(options.id, function(data) {
+				options = data ? { user: data.models[0] } : { user: {} };
+				console.log(options);
 				var template = _.template(html)(options);
 				$scope.$el.html(template);
 			})
@@ -76,7 +79,7 @@ var UserForm = Backbone.View.extend({
 		'submit .formUser': 'saveUser'
 	}
 	, saveUser: function(ev) {
-		var details = $(ev.currentTarget).serializeObjects();
+		var details = $(ev.currentTarget).serialize();
 		formToObject(details);
 
 		return false;
